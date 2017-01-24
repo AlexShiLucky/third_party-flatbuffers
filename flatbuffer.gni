@@ -72,6 +72,9 @@ template("flatbuffer") {
     ]
 
     args = [
+      "-I",
+      rebase_path("//"),
+      "--no-includes",
       "-c",
       "-o",
       "$out_dir",
@@ -80,7 +83,7 @@ template("flatbuffer") {
 
     # The deps may have steps that have to run before running flatc.
     if (defined(invoker.deps)) {
-      deps += invoker.deps
+      deps = invoker.deps
     }
   }
 
