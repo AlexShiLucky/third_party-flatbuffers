@@ -53,7 +53,9 @@ template("flatbuffer") {
   set_sources_assignment_filter([])
 
   action_name = "${target_name}_gen"
+  config_name = "${target_name}_config"
   source_set_name = target_name
+
   compiled_action_foreach(action_name) {
     visibility = [ ":$source_set_name" ]
 
@@ -74,7 +76,6 @@ template("flatbuffer") {
     args = [
       "-I",
       rebase_path("//"),
-      "--no-includes",
       "-c",
       "-o",
       "$out_dir",
@@ -85,6 +86,10 @@ template("flatbuffer") {
     if (defined(invoker.deps)) {
       deps = invoker.deps
     }
+  }
+
+  config(config_name) {
+    include_dirs = get_path_info(get_target_outputs(":$action_name"), "dir")
   }
 
   source_set(target_name) {
@@ -104,7 +109,10 @@ template("flatbuffer") {
       testonly = invoker.testonly
     }
 
-    public_configs = [ "//third_party/flatbuffers:flatbuffers_config" ]
+    public_configs = [
+      "//third_party/flatbuffers:flatbuffers_config",
+      ":$config_name",
+    ]
 
     public_deps = [
       # The generated headers reference headers within flatbuffers, so
