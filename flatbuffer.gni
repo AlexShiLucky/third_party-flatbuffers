@@ -79,6 +79,7 @@ template("flatbuffer") {
       "-c",
       "-o",
       "$out_dir",
+      "--gen-mutable",
       "{{source}}",
     ]
 
